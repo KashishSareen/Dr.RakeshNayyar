@@ -1,333 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VeCare Hospital</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
-
-<style>
-body{
-font-family:'Inter',system-ui,-apple-system,sans-serif;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeCare Hospital · Dr. Rakesh Nayyar</title>
+  <!-- Tailwind + Inter + Remix Icon -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; }
+    /* smooth sidebar */
+    .sidebar-transition { transition: transform 0.3s ease-in-out; }
+    .sidebar-open { transform: translateX(0); }
+    .sidebar-closed { transform: translateX(-100%); }
+    /* faq accordion */
+    .faq-question { cursor: pointer; user-select: none; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    .faq-item.active .faq-answer { max-height: 300px; } /* enough for answers */
+    .faq-item.active .faq-icon i::before { content: "\ea78"; } /* ri-subtract-line */
+  </style>
 </head>
+<body class="antialiased text-[#1e3a3a]">
 
-<body class="bg-white">
-
-<!-- header -->
-<header class="h-[10vh] w-full bg-[#2A9D8F] flex items-center justify-center shadow-md sticky top-0 z-10">
-
-<div class="w-[90%] max-w-7xl flex items-center justify-between">
-
-<div class="flex items-center h-full">
-
-  <img 
-    src="./images/logoimg.jpg"
-    alt="VeCare Hospital Logo"
-    loading="lazy"
-    class="size-75 h-10  object-cover mr-3"
-  />
-
+<!-- ========== MOBILE SIDEBAR (left slim) ========== -->
+<div id="mobileSidebar" class="fixed top-0 left-0 h-full w-64 bg-[#2A9D8F] shadow-2xl z-50 sidebar-transition sidebar-closed lg:hidden flex flex-col">
+  <div class="flex justify-end p-4">
+    <button id="closeSidebarBtn" class="text-white text-2xl focus:outline-none"><i class="ri-close-line"></i></button>
+  </div>
+  <ul class="flex flex-col gap-6 text-white text-lg font-medium px-6 mt-4">
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">Home</a></li>
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">About Us</a></li>
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">Our Journey</a></li>
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">Blog</a></li>
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">Contact</a></li>
+  </ul>
+  <div class="mt-auto p-6 text-white/80 text-sm">VeCare Hospital<br>Andheri East, Mumbai</div>
 </div>
+<div id="sidebarBackdrop" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 hidden lg:hidden"></div>
 
-<ul class="hidden lg:flex gap-8 text-white text-[16px] font-medium items-center">
-<li class="hover:scale-105 transition-transform duration-200 cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Home</li>
-<li class="hover:scale-105 transition-transform duration-200 cursor-pointer border-b-2 border-transparent hover:border-white pb-1">About Us</li>
-<li class="hover:scale-105 transition-transform duration-200 cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Our Journey</li>
-<li class="hover:scale-105 transition-transform duration-200 cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Blog</li>
-</ul>
+<!-- ========== HEADER ========== -->
+<header class="h-[10vh] min-h-[70px] w-full bg-[#2A9D8F] flex items-center justify-center shadow-md sticky top-0 z-30">
+  <div class="w-[90%] max-w-7xl flex items-center justify-between">
+    <div class="flex items-center">
+      <img src="./images/logoimg.jpg" alt="VeCare" loading="lazy"
+           class="h-10 w-auto object-cover mr-3 rounded-md" onerror="this.src='https://placehold.co/60x40/2A9D8F/white?text=VeCare'">
+    </div>
+    
+    <!-- desktop nav  -->
+    <ul class="hidden lg:flex gap-8 text-white text-[16px] font-medium items-center ml-auto">
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Home</li>
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1">About Us</li>
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Our Journey</li>
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Blog</li>
+    </ul>
 
-<div class="lg:hidden text-white text-sm font-medium">
-☰
-</div>
-
-</div>
+    <!-- mobile menu button (only visible on small screens) -->
+    <div class="flex items-center lg:hidden">
+      <div class="text-white text-2xl cursor-pointer" id="menuToggleBtn"><i class="ri-menu-2-line"></i></div>
+    </div>
+  </div>
 </header>
 
+<!-- ========== MAIN CONTENT (all existing sections preserved, then FAQ added) ========== -->
 
-<!-- hero section -->
+<!-- Hero Section -->
 <section class="min-h-screen w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-12 md:py-0">
-
-<div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-
-
-<!-- left content -->
-<div class="w-full lg:w-1/2 space-y-6 xl:space-y-7">
-
-<h1 class="text-4xl xl:text-5xl font-bold text-[#1e3a3a] leading-tight text-center lg:text-start " >
-
-<span class="text-[#2A9D8F] text-2xl xl:text-3xl font-medium block mb-2 ">
-VeCare Hospital
-</span>
-
-Dr. Rakesh Nayyar <br class="hidden sm:block">
-
-<span class="text-[#2A9D8F] text-3xl xl:text-4xl">
-MBBS, DTCD, CMD
-</span>
-
-<span class="block text-lg xl:text-xl text-[#1e3a3a] mt-2 uppercase">
-Diploma in Tuberculosis & Chest Diseases
-</span>
-
-</h1>
-
-
-<p class="text-base sm:text-lg text-black font-medium flex flex-wrap justify-center md:justify-center lg:justify-start sm:justify-start gap-2 mt-2">
-
-<span class="bg-white px-3 py-1 rounded-full shadow-sm text-xs sm:text-sm whitespace-nowrap">
-PGD in Diabetes
-</span>
-
-<span class="bg-white px-3 py-1 rounded-full shadow-sm text-xs sm:text-sm whitespace-nowrap">
-Cardiology
-</span>
-
-<span class="bg-white px-3 py-1 rounded-full shadow-sm text-xs sm:text-sm whitespace-nowrap">
-Clinical Endocrinology
-</span>
-
-</p>
-
-
-<p class="text-[#2c4a48] text-base xl:text-lg leading-relaxed max-w-2xl lg:max-w-full text-center lg:text-start">
-Dr. Rakesh Nayyar, a PGD in Clinical Endocrinology and Diabetes specialist, offers expert care at Ve Care Hospital, Andheri East. The hospital also provides comprehensive services in Surgical Maternity and Polyclinic care, ensuring holistic treatment for all patients.
-</p>
-
-</div>
-
-
-<!-- right image -->
-<div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
-
-  <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group">
-
-    <img
-      src="./images/hero.jpg"
-      alt="Dr Rakesh Nayyar"
-      loading="lazy"
-      class="w-full h-auto object-cover rounded-3xl shadow-xl transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:shadow-2xl"
-    />
-
+  <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
+    <div class="w-full lg:w-1/2 space-y-6 xl:space-y-7">
+      <h1 class="text-4xl xl:text-5xl font-bold text-[#1e3a3a] leading-tight text-center lg:text-start">
+        <span class="text-[#2A9D8F] text-2xl xl:text-3xl font-medium block mb-2">VeCare Hospital</span>
+        Dr. Rakesh Nayyar <br class="hidden sm:block">
+        <span class="text-[#2A9D8F] text-3xl xl:text-4xl">MBBS, DTCD, CMD</span>
+        <span class="block text-lg xl:text-xl text-[#1e3a3a] mt-2 uppercase tracking-wide">Diploma in Tuberculosis & Chest Diseases</span>
+      </h1>
+      <p class="text-base sm:text-lg text-black font-medium flex flex-wrap justify-center lg:justify-start gap-2 mt-2">
+        <span class="bg-white px-3 py-1 rounded-full shadow-sm text-xs sm:text-sm">PGD in Diabetes</span>
+        <span class="bg-white px-3 py-1 rounded-full shadow-sm text-xs sm:text-sm">Cardiology</span>
+        <span class="bg-white px-3 py-1 rounded-full shadow-sm text-xs sm:text-sm">Clinical Endocrinology</span>
+      </p>
+      <p class="text-[#2c4a48] text-base xl:text-lg leading-relaxed max-w-2xl lg:max-w-full text-center lg:text-start">
+        Dr. Rakesh Nayyar, a PGD in Clinical Endocrinology and Diabetes specialist, offers expert care at Ve Care Hospital, Andheri East. The hospital also provides comprehensive services in Surgical Maternity and Polyclinic care, ensuring holistic treatment for all patients.
+      </p>
+    </div>
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
+      <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
+        <img src="./images/hero.jpg" alt="Dr Rakesh Nayyar" loading="lazy"
+             class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
+             onerror="this.src='https://placehold.co/600x400/2A9D8F/white?text=Dr.+Nayyar'">
+      </div>
+    </div>
   </div>
-
-</div>
-
-</div>
-
 </section>
 
-<div class="min-h-[70%] py-10 ">
-  <iframe width="1000" height="450" src="https://www.youtube.com/embed/PsT7oSURHW0" title="Customer Review | Ve Care Hospital | Dr Rakesh Nayyar l Andheri" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="mx-auto w-auto lg:w-[70%]"></iframe>
-
-</div>
-<!-- Journey Section -->
-<section class="min-h-screen w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-12 md:py-0 pb-12 md:pb-16">
-
-<div class="w-full max-w-7xl flex flex-col lg:flex-row   items-center gap-12 lg:gap-16 xl:gap-20">
-
-    
-<!-- Left Image -->
-<div class="w-full lg:w-1/2 flex justify-center lg:justify-start">
-
-<div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[100%] xl:w-full max-w-lg overflow-hidden rounded-3xl group">
-
-<img
-src="./images/journey.jpg"
-alt="VeCare Clinic"
-loading="lazy"
-class="w-full h-auto object-cover rounded-3xl shadow-xl transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:shadow-2xl"
-/>
-
+<!-- embedded video -->
+<div class="w-full bg-[#F8FAFC] py-10 px-4">
+  <div class="max-w-7xl mx-auto">
+    <div class="aspect-video w-full rounded-3xl overflow-hidden shadow-2xl">
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/PsT7oSURHW0" title="Customer Review" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen class="w-full h-full"></iframe>
+    </div>
+  </div>
 </div>
 
-</div>
-
-
-<!-- Right Text -->
-<div class="w-full lg:w-1/2 space-y-6 xl:space-y-7">
-
-<h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">
-  A journey through 
-  <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar's expertise</span> 
-  in comprehensive care
-</h2>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-The VeCare Clinic, located in the heart of Andheri East, stands as a pillar of personalized and patient-centered healthcare. Under the guidance of Dr. Rakesh Nayyar, a seasoned expert with a remarkable track record of treating over 1 lakh patients, the clinic offers advanced medical solutions tailored to meet the unique needs of each individual.
-</p>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-Dr. Nayyar’s extensive experience spans a diverse range of specialties, ensuring comprehensive care for a variety of health conditions. His holistic approach integrates cutting-edge medical advancements with compassionate treatment, emphasizing not just physical recovery but overall well-being.
-</p>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-Equipped with state-of-the-art facilities, the VeCare Clinic provides a comfortable and welcoming environment where patients feel valued and cared for. From precise diagnoses to effective treatment plans, every aspect of the care journey is meticulously designed to deliver the best outcomes.
-</p>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-Dr. Nayyar’s unwavering commitment to staying at the forefront of medical innovation ensures that every patient receives world-class care. At VeCare Clinic, your health is not just a priority—it’s a promise fulfilled with dedication, empathy, and expertise.
-</p>
-
-</div>
-
-</div>
-
+<!-- Journey Section (image left) -->
+<section class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
+  <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-start">
+      <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[100%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
+        <img src="./images/journey.jpg" alt="Clinic" loading="lazy"
+             class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
+             onerror="this.src='https://placehold.co/600x400/2A9D8F/white?text=Clinic'">
+      </div>
+    </div>
+    <div class="w-full lg:w-1/2 space-y-6">
+      <h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">A journey through <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar's expertise</span> in comprehensive care</h2>
+      <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">The VeCare Clinic, located in the heart of Andheri East, stands as a pillar of personalized and patient-centered healthcare. Under the guidance of Dr. Rakesh Nayyar, a seasoned expert with a remarkable track record of treating over 1 lakh patients, the clinic offers advanced medical solutions tailored to meet the unique needs of each individual.</p>
+      <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">Dr. Nayyar’s extensive experience spans a diverse range of specialties, ensuring comprehensive care for a variety of health conditions. His holistic approach integrates cutting-edge medical advancements with compassionate treatment.</p>
+    </div>
+  </div>
 </section>
 
-<!-- section 3 -->
-<section class="min-h-screen w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-12 md:py-0 pb-12 md:pb-16">
-
-<div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-
-
-<!-- Left Text -->
-<div class="w-full lg:w-1/2 space-y-6 xl:space-y-7">
-
-<h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">
-  Compassionate Patient Care at VeCare Hospital with 
-  <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar</span>
-</h2>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-VeCare Hospital in Andheri East, under the expert leadership of Dr. Rakesh Nayyar, stands as a beacon of excellence in healthcare. Renowned for its patient-first philosophy, the hospital is committed to delivering exceptional care with a personal touch.
-</p>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-The dedicated team of highly skilled nurses and medical professionals collaborates seamlessly to offer tailored treatments that address the unique needs of every patient. Combining expertise with empathy, the staff ensures a supportive and comforting experience throughout the healing journey.
-</p>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-VeCare Hospital is equipped with state-of-the-art facilities, enabling accurate diagnoses and effective treatments across various specialties. The welcoming environment fosters trust and confidence, ensuring patients feel valued and cared for at every step.
-</p>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-Driven by a commitment to holistic healing and superior medical outcomes, VeCare Hospital redefines modern healthcare, making it a trusted choice for individuals and families seeking compassionate, high-quality treatment.
-</p>
-
-</div>
-
-
-<!-- Right Image -->
-<div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
-
-<div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group">
-
-<img
-src="./images/compassionate.jpg"
-alt="VeCare Hospital"
-loading="lazy"
-class="w-full h-auto object-cover rounded-3xl shadow-xl transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:shadow-2xl"
-/>
-
-</div>
-
-</div>
-
-
-</div>
-
+<!-- section 3: compassionate care (image right) -->
+<section class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
+  <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
+    <div class="w-full lg:w-1/2 space-y-6">
+      <h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">Compassionate Patient Care at VeCare Hospital with <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar</span></h2>
+      <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">VeCare Hospital in Andheri East, under the expert leadership of Dr. Rakesh Nayyar, stands as a beacon of excellence in healthcare. Renowned for its patient-first philosophy, the hospital is committed to delivering exceptional care with a personal touch.</p>
+      <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">The dedicated team of highly skilled nurses and medical professionals collaborates seamlessly to offer tailored treatments that address the unique needs of every patient.</p>
+    </div>
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
+      <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
+        <img src="./images/compassionate.jpg" alt="Compassionate care" loading="lazy"
+             class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
+             onerror="this.src='https://placehold.co/600x400/2A9D8F/white?text=Compassionate'">
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- section 4 -->
-<section class="min-h-screen w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-12 md:py-0 pb-12 md:pb-16">
-
-<div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-
-    
-<!-- Left Image -->
-<div class="w-full lg:w-1/2 flex justify-center lg:justify-start">
-
-<div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group">
-
-<img
-src="./images/wellness.jpg"
-alt="VeCare Clinic"
-loading="lazy"
-class="w-full h-auto object-cover rounded-3xl shadow-xl transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:shadow-2xl"
-/>
-
-</div>
-
-</div>
-
-
-<!-- Right Text -->
-<div class="w-full lg:w-1/2 space-y-6 xl:space-y-7">
-
-<h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">
-  Your Wellness Journey Begins Here with 
-  <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar</span>
-</h2>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-Embark on a path to better health with Dr. Rakesh Nayyar, a seasoned medical professional committed to providing exceptional, patient-centric care.
-</p>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-Located at VeCare Hospital in Andheri East, Dr. Nayyar brings together advanced medical expertise and cutting-edge technology in a serene and compassionate setting. With years of experience, he offers personalized treatment plans designed to address each patient’s unique health challenges, ensuring a comprehensive and holistic healing journey.
-</p>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-From diagnosis to recovery, Dr. Nayyar’s commitment to excellence redefines healthcare, blending modern techniques with a deep sense of empathy and understanding. At VeCare Hospital, your well-being isn’t just a priority—it’s a promise. Discover care that not only treats but transforms your health experience.
-</p>
-
-
-</div>
-
-</div>
-
+<!-- section 4: wellness (image left) -->
+<section class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
+  <div class="w-full max-w-7xl flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-start">
+      <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
+        <img src="./images/wellness.jpg" alt="Wellness journey" loading="lazy"
+             class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
+             onerror="this.src='https://placehold.co/600x400/2A9D8F/white?text=Wellness'">
+      </div>
+    </div>
+    <div class="w-full lg:w-1/2 space-y-6">
+      <h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">Your Wellness Journey Begins Here with <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar</span></h2>
+      <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">Embark on a path to better health with Dr. Rakesh Nayyar, a seasoned medical professional committed to providing exceptional, patient-centric care.</p>
+      <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">Located at VeCare Hospital in Andheri East, Dr. Nayyar brings together advanced medical expertise and cutting-edge technology in a serene and compassionate setting.</p>
+    </div>
+  </div>
 </section>
 
-<!-- section 5 -->
-<section class="min-h-screen w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-12 md:py-0 pb-12 md:pb-16">
-
-<div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-
-<!-- Left Content -->
-<div class="w-full lg:w-1/2 space-y-6 xl:space-y-7">
-
-<h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">
-MBBS, DTCD 
-<span class="text-[#2A9D8F]">[DIPLOMA IN TUBERCULOSIS & CHEST DISEASES]</span>, 
-CMD, PGD IN DIABETES, CARDIOLOGY & CLINICAL ENDOCRINOLOGY
-</h2>
-
-<p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">
-With over 30 years of experience in advancing healthcare, I specialize in Preventive Cardiology, focusing on Hypertension, Heart Failure, and related complications. My expertise also extends to managing Diabetic Foot and other diabetes-related issues, along with Respiratory Conditions such as Asthma, Allergy, Tuberculosis, and COPD. Additionally, I provide preventive care for Neurodegenerative Diseases and offer specialized treatments with Ozone Therapy for enhanced healing and wellness.
-</p>
-
-<!-- Button -->
-<div class="text-center lg:text-start">
-<a href="#" class="inline-block bg-[#2A9D8F]  text-white font-medium px-6 py-3 rounded-full shadow-md hover:bg-[#23867a] transition-all duration-300">
-Read More
-</a>
-</div>
-
-</div>
-
-<!-- Right Image -->
-<div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
-
-<div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group">
-
-<img
-src="./images/hero.jpg"
-alt="Dr Rakesh Nayyar"
-loading="lazy"
-class="w-full h-auto object-cover rounded-3xl shadow-xl transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:shadow-2xl"
-/>
-
-</div>
-
-</div>
-
-</div>
-
+<!-- section 5: credentials + CTA (image right) -->
+<section class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
+  <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
+    <div class="w-full lg:w-1/2 space-y-6">
+      <h2 class="text-2xl md:text-3xl font-bold leading-snug text-[#1e3a3a]"><span class="text-[#2A9D8F]">MBBS, DTCD</span> [DIPLOMA IN TUBERCULOSIS & CHEST DISEASES], CMD, PGD IN DIABETES, CARDIOLOGY & CLINICAL ENDOCRINOLOGY</h2>
+      <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">With over 30 years of experience in advancing healthcare, I specialize in Preventive Cardiology, focusing on Hypertension, Heart Failure, and related complications. My expertise also extends to managing Diabetic Foot and other diabetes-related issues, along with Respiratory Conditions such as Asthma, Allergy, Tuberculosis, and COPD. Additionally, I provide preventive care for Neurodegenerative Diseases and offer specialized treatments with Ozone Therapy for enhanced healing and wellness.</p>
+      <div class="text-center lg:text-start pt-4">
+        <a href="#" class="inline-block bg-[#2A9D8F] text-white font-medium px-8 py-4 rounded-full shadow-lg hover:bg-[#23867a] transition-all duration-300 text-lg">Read More</a>
+      </div>
+    </div>
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
+      <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
+        <img src="./images/hero.jpg" alt="Dr Rakesh Nayyar" loading="lazy"
+             class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
+             onerror="this.src='https://placehold.co/600x400/2A9D8F/white?text=Dr.+Nayyar'">
+      </div>
+    </div>
+  </div>
 </section>
+
+<!-- ==========  FAQ SECTION ========== -->
+<section class="w-full bg-white py-20 px-4 md:px-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- section heading -->
+    <div class="text-center mb-14">
+      <span class="text-[#2A9D8F] font-semibold text-lg tracking-wider">COMMON QUERIES</span>
+      <h2 class="text-4xl md:text-5xl font-bold text-[#1e3a3a] mt-2">Frequently Asked <span class="text-[#2A9D8F]">Questions</span></h2>
+      <p class="text-[#2c4a48] text-lg mt-4 max-w-2xl mx-auto">Quick answers to help you prepare for your visit and understand our approach.</p>
+    </div>
+
+    <!-- FAQ accordion grid (responsive, single column on mobile) -->
+    <div class="space-y-5">
+      <!-- item 1 -->
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100 transition-all">
+        <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
+          <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">  What is the official contact no of VeCare Hospital
+                        </h3>
+                       
+          <span class="faq-icon text-[#2A9D8F] text-2xl flex-shrink-0"><i class="ri-add-line"></i></span>
+        </div>
+        <div class="faq-answer mt-3 text-[#2c4a48] leading-relaxed">
+          <p>The contact no of VeCare Hospital is 9892429207</p>
+        </div>
+      </div>
+      <!-- item 2 -->
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
+          <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">
+                        What is the official email id of VeCare Hospital
+                        </h3>
+          <span class="faq-icon text-[#2A9D8F] text-2xl"><i class="ri-add-line"></i></span>
+        </div>
+        <div class="faq-answer mt-3 text-[#2c4a48] leading-relaxed">
+          <p>The official email id of VeCare Hospital is drrakeshnayyar@gmail.com</p>
+        </div>
+      </div>
+      <!-- item 3 -->
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
+          <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">
+                        How can I book an appointment with Dr. Rakesh Nayyar?
+                        </h3>
+          <span class="faq-icon text-[#2A9D8F] text-2xl"><i class="ri-add-line"></i></span>
+        </div>
+        <div class="faq-answer mt-3 text-[#2c4a48] leading-relaxed">
+          <p>Appointments with Dr. Rakesh Nayyar can be booked directly through VeCare Hospital’s reception or online via the hospital’s website. Walk-ins are also welcome, but prior appointments are recommended for a smoother experience</p>
+        </div>
+      </div>
+      <!-- item 4 -->
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
+          <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">
+                        Does Dr. Nayyar treat chronic conditions like diabetes and heart disease?
+                        </h3>
+          <span class="faq-icon text-[#2A9D8F] text-2xl"><i class="ri-add-line"></i></span>
+        </div>
+        <div class="faq-answer mt-3 text-[#2c4a48] leading-relaxed">
+          <p>Yes, Dr. Nayyar is highly experienced in treating chronic conditions such as diabetes and cardiovascular diseases. He offers personalized treatment plans and comprehensive care for effective disease management and improved quality of life</p>
+        </div>
+      </div>
+      <!-- item 5 -->
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
+          <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">
+                        What are Dr. Rakesh Nayyar’s areas of specialization?
+                        </h3>
+          <span class="faq-icon text-[#2A9D8F] text-2xl"><i class="ri-add-line"></i></span>
+        </div>
+        <div class="faq-answer mt-3 text-[#2c4a48] leading-relaxed">
+          <p>Dr. Rakesh Nayyar specializes in managing Tuberculosis and Chest Diseases, Diabetes, Cardiology, and Clinical Endocrinology. With advanced qualifications including MBBS, DTCD, CMD, and PGDs in these fields, he provides expert care tailored to your needs</p>
+        </div>
+      </div>
+    </div>
+
+  
+  </div>
+</section>
+
+<!-- map section -->
+ <div cass="w-full bg-[#F8FAFC] py-10 px-4 lg:h-screen my-3">
+  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.1773734525596!2d72.86420007497803!3d19.09987308210965!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c976be8aebc5%3A0xf798dc9b2de23083!2sVe%20Care%20Hospital%20Dr.Rakesh%20Nayyar!5e0!3m2!1sen!2sin!4v1773130500899!5m2!1sen!2sin" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="lg:w-[80%] mx-auto my-10"></iframe>
+ </div>
+
+
+<!-- footer -->
+<footer class="bg-[#1e3a3a] text-white/70 py-8 text-center text-sm">
+  <p>© 2026 VeCare Hospital — Andheri East, Mumbai. All rights reserved.</p>
+</footer>
+
+<!-- sidebar javascript -->
+<script>
+  (function() {
+    const sidebar = document.getElementById('mobileSidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const menuBtn = document.getElementById('menuToggleBtn');
+    const closeBtn = document.getElementById('closeSidebarBtn');
+
+    function openSidebar() {
+      sidebar.classList.remove('sidebar-closed');
+      sidebar.classList.add('sidebar-open');
+      backdrop.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+      sidebar.classList.add('sidebar-closed');
+      sidebar.classList.remove('sidebar-open');
+      backdrop.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    if (menuBtn) menuBtn.addEventListener('click', openSidebar);
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if (backdrop) backdrop.addEventListener('click', closeSidebar);
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sidebar && !sidebar.classList.contains('sidebar-closed')) closeSidebar(); });
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 1024 && sidebar && !sidebar.classList.contains('sidebar-closed')) closeSidebar();
+    });
+  })();
+</script>
+
+<!-- FAQ toggle function (simple pure js) -->
+<script>
+  window.toggleFaq = function(element) {
+    const faqItem = element.closest('.faq-item');
+    if (!faqItem) return;
+    // close others if you want (optional – keeps accordion style)
+    document.querySelectorAll('.faq-item').forEach(item => {
+      if (item !== faqItem && item.classList.contains('active')) {
+        item.classList.remove('active');
+        const icon = item.querySelector('.faq-icon i');
+        if (icon) icon.className = 'ri-add-line';
+      }
+    });
+    // toggle current
+    faqItem.classList.toggle('active');
+    const icon = faqItem.querySelector('.faq-icon i');
+    if (faqItem.classList.contains('active')) {
+      icon.className = 'ri-subtract-line';
+    } else {
+      icon.className = 'ri-add-line';
+    }
+  };
+</script>
 </body>
 </html>
