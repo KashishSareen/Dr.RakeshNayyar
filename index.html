@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>VeCare Hospital · Dr. Rakesh Nayyar</title>
   <!-- Tailwind + Inter + Remix Icon -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet">
+  <!-- AOS animation library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; overflow-x: hidden; }
     /* smooth sidebar */
     .sidebar-transition { transition: transform 0.3s ease-in-out; }
     .sidebar-open { transform: translateX(0); }
@@ -19,9 +21,46 @@
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     .faq-item.active .faq-answer { max-height: 300px; } /* enough for answers */
     .faq-item.active .faq-icon i::before { content: "\ea78"; } /* ri-subtract-line */
+    /* smooth scroll behavior */
+    html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
+    * { box-sizing: border-box; }
+    img, video, iframe { max-width: 100%; height: auto; }
+      /* fixed whatsapp icon */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 30px;
+      right: 20px;
+      z-index: 99;
+      background-color: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .whatsapp-float:hover {
+      background-color: #20B859;
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.25);
+    }
+    @media (max-width: 768px) {
+      .whatsapp-float {
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
+        bottom: 20px;
+        right: 15px;
+      }
+    }
   </style>
 </head>
-<body class="antialiased text-[#1e3a3a]">
+<body class="antialiased text-[#1e3a3a] w-full overflow-x-hidden">
 
 <!-- ========== MOBILE SIDEBAR (left slim) ========== -->
 <div id="mobileSidebar" class="fixed top-0 left-0 h-full w-64 bg-[#2A9D8F] shadow-2xl z-50 sidebar-transition sidebar-closed lg:hidden flex flex-col">
@@ -29,11 +68,11 @@
     <button id="closeSidebarBtn" class="text-white text-2xl focus:outline-none"><i class="ri-close-line"></i></button>
   </div>
   <ul class="flex flex-col gap-6 text-white text-lg font-medium px-6 mt-4">
-    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">Home</a></li>
-    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">About Us</a></li>
-    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">Our Journey</a></li>
-    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">Blog</a></li>
-    <!-- <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#">Contact</a></li> -->
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#home" class="mobile-nav-link">Home</a></li>
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#about" class="mobile-nav-link">About Us</a></li>
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#journey" class="mobile-nav-link">Our Journey</a></li>
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#blog" class="mobile-nav-link">Blog</a></li>
+    <li class="border-b border-white/20 pb-2 hover:pl-2"><a href="#contact" class="mobile-nav-link">Contact</a></li>
   </ul>
   <div class="mt-auto p-6 text-white/80 text-sm">VeCare Hospital<br>Andheri East, Mumbai</div>
 </div>
@@ -49,10 +88,11 @@
     
     <!-- desktop nav  -->
     <ul class="hidden lg:flex gap-8 text-white text-[16px] font-medium items-center ml-auto">
-      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Home</li>
-      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1">About Us</li>
-      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Our Journey</li>
-      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1">Blog</li>
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1"><a href="#home">Home</a></li>
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1"><a href="#about">About Us</a></li>
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1"><a href="#journey">Our Journey</a></li>
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1"><a href="#blog">Blog</a></li>
+      <li class="hover:scale-105 transition cursor-pointer border-b-2 border-transparent hover:border-white pb-1"><a href="#contact">Contact</a></li>
     </ul>
 
     <!-- mobile menu button (only visible on small screens) -->
@@ -65,9 +105,9 @@
 <!-- ========== MAIN CONTENT ========== -->
 
 <!-- Hero Section -->
-<section class="min-h-screen w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-12 md:py-0">
+<section id="home" class="min-h-screen w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-12 md:py-0">
   <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-    <div class="w-full lg:w-1/2 space-y-6 xl:space-y-7">
+    <div class="w-full lg:w-1/2 space-y-6 xl:space-y-7" data-aos="fade-right" data-aos-duration="1000">
       <h1 class="text-4xl xl:text-5xl font-bold text-[#1e3a3a] leading-tight text-center lg:text-start">
         <span class="text-[#2A9D8F] text-2xl xl:text-3xl font-medium block mb-2">VeCare Hospital</span>
         Dr. Rakesh Nayyar <br class="hidden sm:block">
@@ -83,7 +123,7 @@
         Dr. Rakesh Nayyar, a PGD in Clinical Endocrinology and Diabetes specialist, offers expert care at Ve Care Hospital, Andheri East. The hospital also provides comprehensive services in Surgical Maternity and Polyclinic care, ensuring holistic treatment for all patients.
       </p>
     </div>
-    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end" data-aos="fade-left" data-aos-duration="1000">
       <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
         <img src="./images/hero.jpg" alt="Dr Rakesh Nayyar" loading="lazy"
              class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
@@ -94,7 +134,7 @@
 </section>
 
 <!-- embedded video -->
-<div class="w-full bg-[#F8FAFC] py-10 px-4">
+<div class="w-full bg-[#F8FAFC] py-10 px-4" data-aos="zoom-in" data-aos-duration="800">
   <div class="max-w-7xl mx-auto">
     <div class="aspect-video w-full rounded-3xl overflow-hidden shadow-2xl">
       <iframe width="100%" height="100%" src="https://www.youtube.com/embed/PsT7oSURHW0" title="Customer Review" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen class="w-full h-full"></iframe>
@@ -103,16 +143,16 @@
 </div>
 
 <!-- Journey Section (image left) -->
-<section class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
+<section id="journey" class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
   <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-    <div class="w-full lg:w-1/2 flex justify-center lg:justify-start">
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-start" data-aos="fade-right" data-aos-duration="1000">
       <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[100%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
         <img src="./images/journey.jpg" alt="Clinic" loading="lazy"
              class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
              onerror="this.src='https://placehold.co/600x400/2A9D8F/white?text=Clinic'">
       </div>
     </div>
-    <div class="w-full lg:w-1/2 space-y-6">
+    <div class="w-full lg:w-1/2 space-y-6" data-aos="fade-left" data-aos-duration="1000">
       <h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">A journey through <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar's expertise</span> in comprehensive care</h2>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">The VeCare Clinic, located in the heart of Andheri East, stands as a pillar of personalized and patient-centered healthcare. Under the guidance of Dr. Rakesh Nayyar, a seasoned expert with a remarkable track record of treating over 1 lakh patients, the clinic offers advanced medical solutions tailored to meet the unique needs of each individual.</p>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">Dr. Nayyar’s extensive experience spans a diverse range of specialties, ensuring comprehensive care for a variety of health conditions. His holistic approach integrates cutting-edge medical advancements with compassionate treatment.</p>
@@ -123,16 +163,16 @@
 </section>
 
 <!-- section 3: compassionate care (image right) -->
-<section class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
+<section id="about" class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
   <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-    <div class="w-full lg:w-1/2 space-y-6">
+    <div class="w-full lg:w-1/2 space-y-6" data-aos="fade-right" data-aos-duration="1000">
       <h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">Compassionate Patient Care at VeCare Hospital with <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar</span></h2>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">VeCare Hospital in Andheri East, under the expert leadership of Dr. Rakesh Nayyar, stands as a beacon of excellence in healthcare. Renowned for its patient-first philosophy, the hospital is committed to delivering exceptional care with a personal touch.</p>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">The dedicated team of highly skilled nurses and medical professionals collaborates seamlessly to offer tailored treatments that address the unique needs of every patient. Combining expertise with empathy, the staff ensures a supportive and comforting experience throughout the healing journey.</p>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">VeCare Hospital is equipped with state-of-the-art facilities, enabling accurate diagnoses and effective treatments across various specialties. The welcoming environment fosters trust and confidence, ensuring patients feel valued and cared for at every step.</p>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">Driven by a commitment to holistic healing and superior medical outcomes, VeCare Hospital redefines modern healthcare, making it a trusted choice for individuals and families seeking compassionate, high-quality treatment.</p>
     </div>
-    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end" data-aos="fade-left" data-aos-duration="1000">
       <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
         <img src="./images/compassionate.jpg" alt="Compassionate care" loading="lazy"
              class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
@@ -145,14 +185,14 @@
 <!-- section 4: wellness (image left) -->
 <section class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
   <div class="w-full max-w-7xl flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-    <div class="w-full lg:w-1/2 flex justify-center lg:justify-start">
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-start" data-aos="fade-right" data-aos-duration="1000">
       <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
         <img src="./images/wellness.jpg" alt="Wellness journey" loading="lazy"
              class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
              onerror="this.src='https://placehold.co/600x400/2A9D8F/white?text=Wellness'">
       </div>
     </div>
-    <div class="w-full lg:w-1/2 space-y-6">
+    <div class="w-full lg:w-1/2 space-y-6" data-aos="fade-left" data-aos-duration="1000">
       <h2 class="text-3xl md:text-4xl font-bold leading-snug text-[#1e3a3a]">Your Wellness Journey Begins Here with <span class="text-[#2A9D8F]">Dr. Rakesh Nayyar</span></h2>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">Embark on a path to better health with Dr. Rakesh Nayyar, a seasoned medical professional committed to providing exceptional, patient-centric care.</p>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">Located at VeCare Hospital in Andheri East, Dr. Nayyar brings together advanced medical expertise and cutting-edge technology in a serene and compassionate setting. With years of experience, he offers personalized treatment plans designed to address each patient’s unique health challenges, ensuring a comprehensive and holistic healing journey.</p>
@@ -164,14 +204,14 @@
 <!-- section 5: credentials + CTA (image right) -->
 <section class="w-full bg-[#F8FAFC] flex items-center justify-center px-4 md:px-8 py-16 md:py-20">
   <div class="w-full max-w-7xl flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-20">
-    <div class="w-full lg:w-1/2 space-y-6">
+    <div class="w-full lg:w-1/2 space-y-6" data-aos="fade-right" data-aos-duration="1000">
       <h2 class="text-2xl md:text-3xl font-bold leading-snug text-[#1e3a3a]"><span class="text-[#2A9D8F]">MBBS, DTCD</span> [DIPLOMA IN TUBERCULOSIS & CHEST DISEASES], CMD, PGD IN DIABETES, CARDIOLOGY & CLINICAL ENDOCRINOLOGY</h2>
       <p class="text-[#2c4a48] text-base md:text-lg leading-relaxed">With over 30 years of experience in advancing healthcare, I specialize in Preventive Cardiology, focusing on Hypertension, Heart Failure, and related complications. My expertise also extends to managing Diabetic Foot and other diabetes-related issues, along with Respiratory Conditions such as Asthma, Allergy, Tuberculosis, and COPD. Additionally, I provide preventive care for Neurodegenerative Diseases and offer specialized treatments with Ozone Therapy for enhanced healing and wellness.</p>
       <div class="text-center lg:text-start pt-4">
         <a href="#" class="inline-block bg-[#2A9D8F] text-white font-medium px-8 py-4 rounded-full shadow-lg hover:bg-[#23867a] transition-all duration-300 text-lg">Read More</a>
       </div>
     </div>
-    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
+    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end" data-aos="fade-left" data-aos-duration="1000">
       <div class="w-[92%] sm:w-[80%] md:w-[65%] lg:w-[90%] xl:w-full max-w-lg overflow-hidden rounded-3xl group shadow-2xl">
         <img src="./images/hero.jpg" alt="Dr Rakesh Nayyar" loading="lazy"
              class="w-full h-auto object-cover rounded-3xl transition-all duration-500 group-hover:scale-105"
@@ -181,11 +221,315 @@
   </div>
 </section>
 
+<!-- Diabetes & Hypertension Awareness -->
+<section class="w-full bg-gradient-to-b from-[#F0F9F7] to-[#E6F3F0] py-16 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- decorative top accent -->
+    <div class="flex justify-center mb-6" data-aos="fade-down">
+      <span class="inline-block w-20 h-1 bg-[#2A9D8F] rounded-full"></span>
+    </div>
+
+    <!-- Heading with refined typography (underline removed, Hypertension straight) -->
+    <div class="text-center mb-12" data-aos="fade-down" data-aos-duration="800">
+      <span class="text-[#2A9D8F] font-semibold tracking-widest text-sm uppercase">know the risks, take control</span>
+      <h2 class="text-4xl md:text-5xl font-bold text-[#1e3a3a] mt-3 leading-tight">
+        Diabetes & Hypertension <span class="text-[#2A9D8F]">Awareness</span>
+      </h2>
+      <p class="text-[#2c4a48] mt-6 text-base md:text-lg max-w-2xl mx-auto font-light">
+        Empowering you with knowledge and compassionate care — because prevention is always better than cure.
+      </p>
+    </div>
+
+     <!-- Doctor Card – refined with depth and personality -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 md:p-10 mb-16 flex flex-col md:flex-row items-center gap-8 border border-white/50 relative overflow-hidden" data-aos="zoom-in" data-aos-duration="1000">
+      <!-- subtle pattern overlay -->
+      <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#2A9D8F 1px, transparent 1px); background-size: 20px 20px;"></div>
+      
+      <!-- Doctor Image with elegant frame -->
+      <div class="relative z-10">
+        <div class="w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden ring-4 ring-[#2A9D8F]/20 shadow-2xl">
+          <img src="./images/hero.jpg" alt="Dr Rakesh Nayyar" class="w-full h-full object-cover scale-110 hover:scale-100 transition-transform duration-500">
+        </div>
+        <!-- years badge -->
+        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#2A9D8F] text-white text-sm font-bold px-5 py-1.5 rounded-full shadow-lg whitespace-nowrap">
+          30+ years
+        </div>
+      </div>
+
+      <!-- Doctor Details – enriched with icons & modern layout -->
+      <div class="flex-1 text-center md:text-left z-10">
+        <h3 class="text-3xl md:text-4xl font-bold text-[#1e3a3a]">Dr. Rakesh Nayyar</h3>
+        <p class="text-[#2A9D8F] text-lg md:text-xl font-medium mt-1 flex items-center justify-center md:justify-start gap-2">
+          <i class="ri-stethoscope-fill text-2xl"></i> Consultant Physician & Diabetologist
+        </p>
+        <!-- credentials chips -->
+        <div class="flex flex-wrap justify-center md:justify-start gap-2 mt-3">
+          <span class="bg-[#2A9D8F]/10 text-[#1e3a3a] px-4 py-1.5 rounded-full text-sm font-medium border border-[#2A9D8F]/20">MBBS, DTCD</span>
+          <span class="bg-[#2A9D8F]/10 text-[#1e3a3a] px-4 py-1.5 rounded-full text-sm font-medium border border-[#2A9D8F]/20">CMD</span>
+          <span class="bg-[#2A9D8F]/10 text-[#1e3a3a] px-4 py-1.5 rounded-full text-sm font-medium border border-[#2A9D8F]/20">PGD Diabetes</span>
+          <span class="bg-[#2A9D8F]/10 text-[#1e3a3a] px-4 py-1.5 rounded-full text-sm font-medium border border-[#2A9D8F]/20">Cardiology</span>
+          <span class="bg-[#2A9D8F]/10 text-[#1e3a3a] px-4 py-1.5 rounded-full text-sm font-medium border border-[#2A9D8F]/20">Endocrinology</span>
+        </div>
+        
+        <!-- description with icon list -->
+        <p class="text-[#2c4a48] text-base md:text-lg mt-5 leading-relaxed max-w-2xl">
+          With over <span class="font-bold text-[#2A9D8F]">three decades of clinical excellence</span>, Dr. Nayyar brings a holistic, patient-first approach to managing diabetes, hypertension, and related conditions. His expertise spans preventive cardiology, respiratory care, and advanced ozone therapy — all tailored to your unique health story.
+        </p>
+        
+        <!-- compact stat line -->
+        <div class="flex flex-wrap justify-center md:justify-start gap-6 mt-6 text-sm text-[#1e3a3a]">
+          <div class="flex items-center gap-2"><i class="ri-heart-pulse-fill text-[#2A9D8F]"></i> <span>10k+ patients managed</span></div>
+          <div class="flex items-center gap-2"><i class="ri-capsule-fill text-[#2A9D8F]"></i> <span>Holistic care plans</span></div>
+          <div class="flex items-center gap-2"><i class="ri-shield-star-fill text-[#2A9D8F]"></i> <span>Preventive specialist</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips Grid – beautifully enhanced with icons, gradients & hover (unchanged) -->
+    <div class="text-center mb-10" data-aos="fade-up">
+      <span class="inline-block bg-white/70 px-6 py-2 rounded-full text-[#2A9D8F] font-semibold shadow-sm text-sm uppercase tracking-wider border border-[#2A9D8F]/20">🌟 doctor's essential tips</span>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-fr">
+
+      <!-- card 1 -->
+      <div class="group bg-white rounded-3xl p-7 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50 flex flex-col items-start relative overflow-hidden" data-aos="flip-left" data-aos-delay="100">
+        <div class="absolute top-0 right-0 w-20 h-20 bg-[#2A9D8F]/5 rounded-bl-[100px] transition-all group-hover:bg-[#2A9D8F]/10"></div>
+        <div class="w-12 h-12 bg-[#2A9D8F]/10 rounded-2xl flex items-center justify-center mb-5 text-[#2A9D8F] text-2xl group-hover:scale-110 transition-transform">🧂</div>
+        <h3 class="font-semibold text-xl text-[#1e3a3a] mb-2 group-hover:text-[#2A9D8F] transition-colors">Reduce Salt Intake</h3>
+        <p class="text-[#2c4a48] text-sm leading-relaxed">Cutting back on salt helps lower blood pressure and reduces strain on your heart — a small change with big benefits.</p>
+        <span class="mt-4 text-xs text-[#2A9D8F] font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">doctor's recommendation <i class="ri-arrow-right-line"></i></span>
+      </div>
+
+      <!-- card 2 -->
+      <div class="group bg-white rounded-3xl p-7 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50 flex flex-col items-start relative overflow-hidden" data-aos="flip-left" data-aos-delay="200">
+        <div class="absolute top-0 right-0 w-20 h-20 bg-[#2A9D8F]/5 rounded-bl-[100px] transition-all group-hover:bg-[#2A9D8F]/10"></div>
+        <div class="w-12 h-12 bg-[#2A9D8F]/10 rounded-2xl flex items-center justify-center mb-5 text-[#2A9D8F] text-2xl group-hover:scale-110 transition-transform">🏃</div>
+        <h3 class="font-semibold text-xl text-[#1e3a3a] mb-2 group-hover:text-[#2A9D8F] transition-colors">Exercise Regularly</h3>
+        <p class="text-[#2c4a48] text-sm leading-relaxed">Daily movement improves insulin sensitivity and keeps your heart strong — even a brisk 30-minute walk works wonders.</p>
+        <span class="mt-4 text-xs text-[#2A9D8F] font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">doctor's recommendation <i class="ri-arrow-right-line"></i></span>
+      </div>
+
+      <!-- card 3 -->
+      <div class="group bg-white rounded-3xl p-7 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50 flex flex-col items-start relative overflow-hidden" data-aos="flip-left" data-aos-delay="300">
+        <div class="absolute top-0 right-0 w-20 h-20 bg-[#2A9D8F]/5 rounded-bl-[100px] transition-all group-hover:bg-[#2A9D8F]/10"></div>
+        <div class="w-12 h-12 bg-[#2A9D8F]/10 rounded-2xl flex items-center justify-center mb-5 text-[#2A9D8F] text-2xl group-hover:scale-110 transition-transform">🩸</div>
+        <h3 class="font-semibold text-xl text-[#1e3a3a] mb-2 group-hover:text-[#2A9D8F] transition-colors">Monitor Blood Sugar & BP</h3>
+        <p class="text-[#2c4a48] text-sm leading-relaxed">Regular tracking helps you and your doctor spot trends early and adjust treatment before complications arise.</p>
+        <span class="mt-4 text-xs text-[#2A9D8F] font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">doctor's recommendation <i class="ri-arrow-right-line"></i></span>
+      </div>
+
+      <!-- card 4 -->
+      <div class="group bg-white rounded-3xl p-7 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50 flex flex-col items-start relative overflow-hidden" data-aos="flip-right" data-aos-delay="100">
+        <div class="absolute top-0 right-0 w-20 h-20 bg-[#2A9D8F]/5 rounded-bl-[100px] transition-all group-hover:bg-[#2A9D8F]/10"></div>
+        <div class="w-12 h-12 bg-[#2A9D8F]/10 rounded-2xl flex items-center justify-center mb-5 text-[#2A9D8F] text-2xl group-hover:scale-110 transition-transform">🚭</div>
+        <h3 class="font-semibold text-xl text-[#1e3a3a] mb-2 group-hover:text-[#2A9D8F] transition-colors">Avoid Smoking & Alcohol</h3>
+        <p class="text-[#2c4a48] text-sm leading-relaxed">Both tobacco and excess alcohol spike blood pressure and worsen diabetes control — quitting is a game changer.</p>
+        <span class="mt-4 text-xs text-[#2A9D8F] font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">doctor's recommendation <i class="ri-arrow-right-line"></i></span>
+      </div>
+
+      <!-- card 5 -->
+      <div class="group bg-white rounded-3xl p-7 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50 flex flex-col items-start relative overflow-hidden" data-aos="flip-right" data-aos-delay="200">
+        <div class="absolute top-0 right-0 w-20 h-20 bg-[#2A9D8F]/5 rounded-bl-[100px] transition-all group-hover:bg-[#2A9D8F]/10"></div>
+        <div class="w-12 h-12 bg-[#2A9D8F]/10 rounded-2xl flex items-center justify-center mb-5 text-[#2A9D8F] text-2xl group-hover:scale-110 transition-transform">⏰</div>
+        <h3 class="font-semibold text-xl text-[#1e3a3a] mb-2 group-hover:text-[#2A9D8F] transition-colors">Take Medicines on Time</h3>
+        <p class="text-[#2c4a48] text-sm leading-relaxed">Consistency with prescribed medication keeps your numbers stable and prevents long-term damage.</p>
+        <span class="mt-4 text-xs text-[#2A9D8F] font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">doctor's recommendation <i class="ri-arrow-right-line"></i></span>
+      </div>
+
+      <!-- card 6 – special highlight -->
+      <div class="group bg-gradient-to-br from-[#2A9D8F] to-[#217a6e] rounded-3xl p-7 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50 flex flex-col items-start relative overflow-hidden text-white" data-aos="flip-right" data-aos-delay="300">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[100px]"></div>
+        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-5 text-white text-2xl backdrop-blur-sm group-hover:scale-110 transition-transform">👨‍⚕️</div>
+        <h3 class="font-semibold text-xl mb-2">Consult Your Doctor</h3>
+        <p class="text-sm leading-relaxed text-white/90">Regular follow-ups with Dr. Nayyar ensure your treatment evolves with your health. Personalised care makes all the difference.</p>
+        <span class="mt-4 text-xs text-white/80 font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">book a consultation <i class="ri-arrow-right-line"></i></span>
+      </div>
+
+    </div>
+
+    <!-- subtle call to action link (optional, reinforces) -->
+    <div class="text-center mt-14" data-aos="fade-up">
+      <a href="#" class="inline-flex items-center gap-2 text-[#2A9D8F] font-medium text-lg hover:gap-3 transition-all duration-300 border-b border-transparent hover:border-[#2A9D8F] pb-0.5">
+        <i class="ri-heart-3-fill text-xl"></i> Get personalised advice from Dr. Nayyar
+        <i class="ri-arrow-right-s-line text-xl"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- Testimonials consolidated -->
+<section id="blog" class="w-full bg-white py-16 md:py-24 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- section header -->
+    <div class="text-center mb-12 md:mb-16" data-aos="fade-down">
+      <span class="text-[#2A9D8F] font-semibold tracking-wider text-sm md:text-base">PATIENT STORIES</span>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e3a3a] mt-2">What Our <span class="text-[#2A9D8F]">Patients Say</span></h2>
+      <p class="text-[#2c4a48] text-base md:text-lg mt-4 max-w-2xl mx-auto">Real experiences from individuals who entrusted us with their health journey.</p>
+    </div>
+
+    <!-- responsive grid: 1 column on mobile, 2 on sm, 3 on lg -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      
+      <!-- testimonial card 1 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">5.0</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“Dr. Nayyar has been a blessing for our family. His thorough approach to managing my father’s diabetes and heart condition gave us immense confidence. The staff at VeCare is equally compassionate.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">S</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Sunita Mehta</h4>
+            <p class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-600">Family caregiver</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- testimonial card 2 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">5.0</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“I had been struggling with respiratory issues for years. Dr. Nayyar’s precise diagnosis and treatment plan, including Ozone Therapy, made a world of difference. I’m finally breathing easy.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">R</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Ramesh Iyer</h4>
+            <p class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-600">Asthma patient</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- testimonial card 3 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="300">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-half-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">4.8</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“The maternity care at VeCare is outstanding. The team guided us through every stage with warmth and expertise. Special thanks to Dr. Nayyar for his overall supervision — truly a multi-specialty gem.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">P</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Priya & Akash</h4>
+            <p class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-600">new parents</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- testimonial card 4 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">5.0</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“After my knee replacement, Dr. Nayyar’s postoperative care and physiotherapy guidance helped me get back on my feet in no time. The whole team is supportive and highly skilled.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">V</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Vijayalakshmi Nair</h4>
+            <p class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-600">orthopaedic patient</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- testimonial card 5 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">5.0</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“I came to VeCare with uncontrolled blood sugar levels. Dr. Nayyar’s holistic diabetes management plan, including diet counseling, has been life‑changing. Forever grateful.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">A</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Arun Khanna</h4>
+            <p class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-600">diabetes care</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- testimonial card 6 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="300">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-half-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">4.9</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“The preventive cardiology program at VeCare is excellent. Regular check‑ups and Dr. Nayyar’s advice on lifestyle changes have kept my heart healthy. Highly recommended for anyone with a family history.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">M</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Meera Desai</h4>
+            <p class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-600">preventive care</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional testimonials card 7 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">5.0</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“Dr. Nayyar is an exceptionally skilled physician. I was completely satisfied with his treatment approach and the excellent results. His treatment skills are truly top-notch, and I felt confident and well-cared for throughout the entire process.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">P</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Pankaj Yadav</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- testimonial card 8 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">5.0</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“The staff and facilities at VE CARE HOSPITAL were also outstanding, providing a clean, professional, and supportive environment. I highly recommend both Dr. Rakesh Nayyar for his expertise and compassionate care.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">S</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Satish Thakar</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- testimonial card 9 -->
+      <div class="group bg-[#F8FAFC] p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2A9D8F]/30 hover:bg-white cursor-default" data-aos="fade-up" data-aos-delay="300">
+        <div class="flex items-center gap-1 text-yellow-400 mb-4 transition-transform duration-300 group-hover:scale-105">
+          <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+          <span class="text-gray-500 text-sm ml-2">5.0</span>
+        </div>
+        <p class="text-[#1e3a3a] text-base md:text-lg leading-relaxed mb-6 transition-colors duration-300 group-hover:text-[#1e3a3a]/90">“Very cooperative staff, their service was quick and uninterrupted, good experience in all aspects.”</p>
+        <div class="flex items-center gap-4 mt-auto transition-all duration-300 group-hover:translate-x-1">
+          <div class="w-12 h-12 bg-[#2A9D8F]/20 rounded-full flex items-center justify-center text-[#2A9D8F] text-xl font-bold transition-all duration-300 group-hover:bg-[#2A9D8F] group-hover:text-white group-hover:scale-110">Z</div>
+          <div>
+            <h4 class="font-semibold text-[#1e3a3a] transition-colors duration-300 group-hover:text-[#2A9D8F]">Zubeda Ashraf</h4>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- subtle bottom CTA / more reviews link -->
+    <div class="text-center mt-12 md:mt-16" data-aos="fade-up">
+      <a href="#" class="inline-flex items-center gap-2 text-[#2A9D8F] font-medium text-lg hover:underline underline-offset-4 transition group">
+        Read more stories <i class="ri-arrow-right-line transition-transform duration-300 group-hover:translate-x-1"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ==========  FAQ SECTION ========== -->
 <section class="w-full bg-white py-20 px-4 md:px-8">
   <div class="max-w-4xl mx-auto">
     <!-- section heading -->
-    <div class="text-center mb-14">
+    <div class="text-center mb-14" data-aos="fade-down">
       
       <h2 class="text-4xl md:text-5xl font-bold text-[#1e3a3a] mt-2">Frequently Asked <span class="text-[#2A9D8F]">Questions</span></h2>
       <p class="text-[#2c4a48] text-lg mt-4 max-w-2xl mx-auto">Quick answers to help you prepare for your visit and understand our approach.</p>
@@ -194,7 +538,7 @@
     <!-- FAQ accordion grid (responsive, single column on mobile) -->
     <div class="space-y-5">
       <!-- item 1 -->
-      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100 transition-all">
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100 transition-all" data-aos="fade-up">
         <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
           <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">  What is the official contact no of VeCare Hospital
                         </h3>
@@ -206,7 +550,7 @@
         </div>
       </div>
       <!-- item 2 -->
-      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="100">
         <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
           <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">
                         What is the official email id of VeCare Hospital
@@ -218,7 +562,7 @@
         </div>
       </div>
       <!-- item 3 -->
-      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="200">
         <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
           <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">
                         How can I book an appointment with Dr. Rakesh Nayyar?
@@ -230,7 +574,7 @@
         </div>
       </div>
       <!-- item 4 -->
-      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="300">
         <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
           <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">
                         Does Dr. Nayyar treat chronic conditions like diabetes and heart disease?
@@ -242,7 +586,7 @@
         </div>
       </div>
       <!-- item 5 -->
-      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="faq-item bg-[#F8FAFC] rounded-2xl p-6 shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="400">
         <div class="faq-question flex justify-between items-center" onclick="toggleFaq(this)">
           <h3 class="text-xl font-semibold text-[#1e3a3a] pr-4">
                         What are Dr. Rakesh Nayyar’s areas of specialization?
@@ -256,7 +600,7 @@
     </div>
 
      <!-- extra note / contact CTA -->
-  <div class="text-center mt-12 bg-[#e6f3f1] p-8 rounded-3xl">
+  <div class="text-center mt-12 bg-[#e6f3f1] p-8 rounded-3xl" data-aos="zoom-in">
       <p class="text-lg text-[#1e3a3a]">Still have questions? We’re happy to help.</p>
       <a href="tel:+91 9892429207" class="inline-flex items-center gap-2 mt-3 bg-[#2A9D8F] text-white px-8 py-4 rounded-full text-lg font-medium shadow-lg hover:bg-[#23867a] transition"><i class="ri-phone-line"></i> +91 9892429207</a>
     </div>
@@ -264,9 +608,9 @@
 </section>
 
 <!-- map section -->
- <div class="w-full bg-[#F8FAFC] py-10 px-4 lg:min-h-screen flex items-center">
+ <div id="contact" class="w-full bg-[#F8FAFC] py-10 px-4 lg:min-h-screen flex items-center">
   <!-- responsive container: full width on mobile, 80% on large screens, centered -->
-  <div class="w-full lg:w-4/5 mx-auto">
+  <div class="w-full lg:w-4/5 mx-auto" data-aos="zoom-in-up">
     <!-- 16:9 aspect ratio container ensures map maintains proportions -->
     <div class="relative w-full pb-[56.25%] md:pb-[50%] lg:pb-[45%] overflow-hidden rounded-3xl shadow-xl">
       <iframe 
@@ -290,10 +634,12 @@
 
     <!-- Logo + About -->
     <div class="text-center sm:text-left">
-      <img src="./images/logoimg.jpg"
-           class="h-12 mb-4 rounded mx-auto sm:mx-0"
-           alt="VeCare Hospital"
-           onerror="this.src='https://placehold.co/120x50/2A9D8F/white?text=VeCare'">
+      <a href="#home">
+        <img src="./images/logoimg.jpg"
+             class="h-12 mb-4 rounded mx-auto sm:mx-0 hover:opacity-80 transition-opacity"
+             alt="VeCare Hospital"
+             onerror="this.src='https://placehold.co/120x50/2A9D8F/white?text=VeCare'">
+      </a>
       <p class="text-sm text-white/80 leading-relaxed max-w-xs mx-auto sm:mx-0">
         Providing comprehensive healthcare solutions with a focus on
         patient well-being and preventive care.
@@ -305,10 +651,19 @@
       <h3 class="text-lg font-semibold mb-4 text-white">Quick Links</h3>
       <ul class="space-y-2 text-sm">
         <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
-          <a href="#">Website</a>
+          <a href="#home">Home</a>
         </li>
-        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block ">
-          <a href="#">Blogs</a>
+        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
+          <a href="#about">About Us</a>
+        </li>
+        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
+          <a href="#journey">Our Journey</a>
+        </li>
+        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
+          <a href="#blog">Blog</a>
+        </li>
+        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
+          <a href="#contact">Contact</a>
         </li>
       </ul>
     </div>
@@ -318,13 +673,16 @@
       <h3 class="text-lg font-semibold mb-4 text-white">Resources</h3>
       <ul class="space-y-2 text-sm">
         <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
-          <a href="#">Home</a>
+          <a href="#">Privacy Policy</a>
         </li>
-        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block ">
-          <a href="#">About Us</a>
+        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
+          <a href="#">Terms of Service</a>
         </li>
-        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block ">
-          <a href="#">Our Journey</a>
+        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
+          <a href="#">FAQs</a>
+        </li>
+        <li class="hover:text-[#E0F2F1] hover:underline underline-offset-4 hover:translate-x-1 transition block">
+          <a href="#">Patient Guide</a>
         </li>
       </ul>
     </div>
@@ -332,15 +690,40 @@
     <!-- Contact -->
     <div class="text-center sm:text-left">
       <h3 class="text-lg font-semibold mb-4 text-white">Contact Us</h3>
-      <ul class="space-y-2 text-sm text-white/80">
-        <li>+91 98924 29207</li>
-        <li class="break-all">drrakeshnayyar@gmail.com</li>
-        <li class="leading-relaxed">
-          4000473VX8+WPR, Sahar Village,<br>
-          Andheri East, Mumbai,<br>
-          Maharashtra 400047
+      <ul class="space-y-3 text-sm text-white/80">
+        <li class="flex items-center justify-center sm:justify-start gap-2 hover:text-white transition-colors">
+          <i class="ri-phone-line text-[#E0F2F1]"></i>
+          <a href="tel:+919892429207" class="hover:underline">+91 98924 29207</a>
+        </li>
+        <li class="flex items-center justify-center sm:justify-start gap-2 hover:text-white transition-colors break-all">
+          <i class="ri-mail-line text-[#E0F2F1]"></i>
+          <a href="mailto:drrakeshnayyar@gmail.com" class="hover:underline">drrakeshnayyar@gmail.com</a>
+        </li>
+        <li class="flex items-start justify-center sm:justify-start gap-2 leading-relaxed">
+          <i class="ri-map-pin-line text-[#E0F2F1] mt-1 flex-shrink-0"></i>
+          <a href="https://maps.google.com/?q=Ve+Care+Hospital+Andheri+East+Mumbai" target="_blank" rel="noopener noreferrer" class="hover:underline">
+            4000473VX8+WPR, Sahar Village,<br>
+            Andheri East, Mumbai,<br>
+            Maharashtra 400047
+          </a>
         </li>
       </ul>
+      
+      <!-- Social Media Links -->
+      <div class="flex items-center justify-center sm:justify-start gap-4 mt-6">
+        <a href="#" class="text-white/80 hover:text-white hover:scale-110 transition-all" aria-label="Facebook">
+          <i class="ri-facebook-fill text-xl"></i>
+        </a>
+        <a href="#" class="text-white/80 hover:text-white hover:scale-110 transition-all" aria-label="Twitter">
+          <i class="ri-twitter-x-fill text-xl"></i>
+        </a>
+        <a href="#" class="text-white/80 hover:text-white hover:scale-110 transition-all" aria-label="Instagram">
+          <i class="ri-instagram-fill text-xl"></i>
+        </a>
+        <a href="#" class="text-white/80 hover:text-white hover:scale-110 transition-all" aria-label="LinkedIn">
+          <i class="ri-linkedin-fill text-xl"></i>
+        </a>
+      </div>
     </div>
 
   </div>
@@ -350,20 +733,40 @@
     <p class="mb-1">
       © 2026 VeCare Hospital — Andheri East, Mumbai. All rights reserved.
     </p>
-    <p class="text-xs text-white">
-      Design & Develop by ReferIndia
+    <p class="text-xs text-white/70">
+      Design & Develop by <a href="#" class="hover:underline hover:text-white">ReferIndia</a>
     </p>
   </div>
 
 </footer>
 
-<!-- sidebar javascript -->
+
+
+<a href="https://wa.me/919892429207?text=Hello%20Dr.%20Nayyar%2C%20I%20would%20like%20to%20book%20an%20appointment." 
+   class="whatsapp-float" 
+   target="_blank" 
+   rel="noopener noreferrer"
+   aria-label="Chat on WhatsApp">
+  <i class="ri-whatsapp-fill"></i>
+</a>
+
+<!-- AOS and sidebar javascript -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
+  // Initialize AOS
+  AOS.init({
+    once: true,
+    duration: 800,
+    offset: 100,
+  });
+
+  // Mobile sidebar functionality with close on scroll and link click
   (function() {
     const sidebar = document.getElementById('mobileSidebar');
     const backdrop = document.getElementById('sidebarBackdrop');
     const menuBtn = document.getElementById('menuToggleBtn');
     const closeBtn = document.getElementById('closeSidebarBtn');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
     function openSidebar() {
       sidebar.classList.remove('sidebar-closed');
@@ -377,12 +780,38 @@
       backdrop.classList.add('hidden');
       document.body.style.overflow = '';
     }
+    
     if (menuBtn) menuBtn.addEventListener('click', openSidebar);
     if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
     if (backdrop) backdrop.addEventListener('click', closeSidebar);
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sidebar && !sidebar.classList.contains('sidebar-closed')) closeSidebar(); });
+    
+    // Close sidebar on window scroll (mobile only)
+    window.addEventListener('scroll', function() {
+      if (window.innerWidth < 1024 && sidebar && !sidebar.classList.contains('sidebar-closed')) {
+        closeSidebar();
+      }
+    });
+    
+    // Close sidebar when any mobile nav link is clicked
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        // Allow the link to navigate smoothly, then close sidebar
+        setTimeout(() => {
+          closeSidebar();
+        }, 100);
+      });
+    });
+    
+    // Escape key closes sidebar
+    window.addEventListener('keydown', (e) => { 
+      if (e.key === 'Escape' && sidebar && !sidebar.classList.contains('sidebar-closed')) closeSidebar(); 
+    });
+    
+    // On window resize, if desktop, ensure sidebar is closed
     window.addEventListener('resize', function() {
-      if (window.innerWidth >= 1024 && sidebar && !sidebar.classList.contains('sidebar-closed')) closeSidebar();
+      if (window.innerWidth >= 1024 && sidebar && !sidebar.classList.contains('sidebar-closed')) {
+        closeSidebar();
+      }
     });
   })();
 </script>
